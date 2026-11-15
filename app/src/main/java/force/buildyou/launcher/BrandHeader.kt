@@ -137,9 +137,13 @@ fun BrandHeader(maxWidth: Dp, modifier: Modifier = Modifier) {
 }
 
 /**
- * The bracketed stamp. With the full ladder string, "--force" renders in the dimmest
- * ink and "./BUILD YOU" one step brighter (brackets mid ink). The border is a fixed
- * 1dp at every text size — it is a layout dp, so it never scales with the type.
+ * The bracketed stamp as a bordered Text — a Text exposes a REAL baseline, so
+ * Modifier.alignByBaseline() in the row above puts the stamp's type on the same
+ * baseline as the date (a Box has no baseline, which silently top-aligned it).
+ *
+ * With the full ladder string, "--force" renders in the dimmest ink and
+ * "./BUILD YOU" one step brighter (brackets mid ink). The border is a fixed 1dp
+ * at every text size — a layout dp that never scales with the type.
  */
 @Composable
 private fun StampBox(text: String, stampSp: Float, full: Boolean, modifier: Modifier = Modifier) {
@@ -157,15 +161,14 @@ private fun StampBox(text: String, stampSp: Float, full: Boolean, modifier: Modi
             withStyle(SpanStyle(color = InkDim)) { append(text.removeSurrounding("[ ", " ]")) }
         }
     }
-    androidx.compose.foundation.layout.Box(
+    Text(
+        text = ink,
+        fontSize = stampSp.sp,
+        fontFamily = FontFamily.Monospace,
         modifier = modifier
+            // Border drawn at a fixed 1dp around the text; padding offsets the
+            // baseline uniformly so date and stamp type stay baseline-aligned.
             .border(width = 1.dp, color = StampBorder)
             .padding(horizontal = 6.dp, vertical = 2.dp),
-    ) {
-        Text(
-            text = ink,
-            fontSize = stampSp.sp,
-            fontFamily = FontFamily.Monospace,
-        )
-    }
+    )
 }

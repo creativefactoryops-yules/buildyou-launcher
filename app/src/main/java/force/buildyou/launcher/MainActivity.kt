@@ -6,11 +6,15 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -65,14 +70,18 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
-            LauncherRoot(
-                apps = appsState.value,
-                engine = terminal,
-                onLaunch = ::launchApp,
-                onAppInfo = ::openAppInfo,
-                onUninstall = ::requestUninstall,
-                onHide = ::hideApp,
-            )
+            // Dark-only deck: every M3 component (bottom sheet, ripple) resolves
+            // from a dark scheme, never the default light one.
+            MaterialTheme(colorScheme = DarkDeckScheme) {
+                LauncherRoot(
+                    apps = appsState.value,
+                    engine = terminal,
+                    onLaunch = ::launchApp,
+                    onAppInfo = ::openAppInfo,
+                    onUninstall = ::requestUninstall,
+                    onHide = ::hideApp,
+                )
+            }
         }
 
         if (savedInstanceState == null) {
@@ -173,6 +182,7 @@ private fun LauncherRoot(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(DeckBlack) // paint behind the transparent system bars
             .onSizeChanged { size ->
                 val dp = size.width / density.density
                 if (dp > 0f) usableWidth = dp
@@ -180,10 +190,14 @@ private fun LauncherRoot(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             BrandHeader(
-                maxWidth = usableWidth.dp,
-                modifier = Modifier.padding(
-                    start = 16.dp, end = 16.dp, top = 18.dp, bottom = 10.dp,
-                ),
+                // Net of this header's own 16dp start + 16dp end padding so the
+                // wordmark auto-shrink and stamp ladder measure real available width.
+                maxWidth = (usableWidth - HEADER_HORIZONTAL_PADDING_DP).dp,
+                modifier = Modifier
+                    .statusBarsPadding() // never drawn under the status bar
+                    .padding(
+                        start = 16.dp, end = 16.dp, top = 18.dp, bottom = 10.dp,
+                    ),
             )
             AppDeck(
                 apps = apps,
@@ -200,3 +214,17 @@ private fun LauncherRoot(
         }
     }
 }
+
+private val DeckBlack = Color(0xFF050505)
+
+/** Dark-only Material 3 scheme; surfaces match the deck/sheet inks. */
+private val DarkDeckScheme = darkColorScheme(
+    background = DeckBlack,
+    surface = DeckBlack,
+    surfaceContainer = Color(0xFF0C0C0B),
+    surfaceContainerLow = Color(0xFF0C0C0B),
+    onSurface = Color(0xFFF2F2F0),
+)
+
+/** Header side padding (16dp each side) netted out of the measured usable width. */
+private const val HEADER_HORIZONTAL_PADDING_DP = 32f

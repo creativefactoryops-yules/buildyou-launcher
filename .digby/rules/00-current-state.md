@@ -2,16 +2,26 @@
 
 ## Project: --force ./BUILD YOU (Android launcher)
 
-- **v1 SHIPPED (2026-11-15):** debug APK built and verified in-container.
+- **v1.1 SHIPPED (2026-11-15, review fixes):** debug APK rebuilt after the independent
+  review; five defects fixed (window insets, stamp baseline, width budget, terminal
+  focus tracking, M3 dark scheme) plus README path fix.
   - APK: `dist/app-debug.apk` (identical to `app/build/outputs/apk/debug/app-debug.apk`),
-    24,194,597 bytes, sha256 `131b9a7e6ba3018405773e27a676f8234764b2586a2aaa864e67d2b49ef7324a`.
-  - Build: `./gradlew --no-daemon assembleDebug` → `BUILD SUCCESSFUL in 1m 9s`.
+    24,210,981 bytes,
+    sha256 `0c2427e4e9f13b22f569595bd675ca84c06af1a64b638000378df68d0682ff86`.
+  - Build: `./gradlew --no-daemon assembleDebug` → `BUILD SUCCESSFUL in 41s`.
   - applicationId `force.buildyou.launcher`, versionName `1.0.0` (versionCode 1),
     minSdk 31 / targetSdk 36 / compileSdk 36, debug-signed (apksigner v2 Verifies,
     CN=Android Debug).
   - Manifest verified via aapt2: MainActivity exported, launchMode=singleTask,
     clearTaskOnLaunch, MAIN+DEFAULT+HOME intent filter, `<queries>` MAIN/LAUNCHER,
     NO QUERY_ALL_PACKAGES.
+  - Review fixes in this build: statusBarsPadding on the header +
+    navigationBarsPadding/imePadding in the terminal (edge-to-edge no longer draws
+    under system bars); stamp rendered as a bordered `Text` so `alignByBaseline`
+    truly shares the date's baseline (a `Box` has no baseline); header maxWidth nets
+    out its 32dp side padding before the TextMeasurer shrink/ladder; terminal input
+    wires `onFocusChanged` (hint no longer renders under the cursor);
+    `MaterialTheme(darkColorScheme())` wraps the deck; README points at `dist/`.
 - **Verification level:** compile + manifest/signature inspection only. No emulator/
   device run was possible (no KVM) — do not claim on-device testing.
 - **Stack pins:** AGP 8.13.2 · Gradle 8.14.3 · Kotlin 2.0.21 · Compose BOM 2024.10.01 ·

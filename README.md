@@ -9,7 +9,7 @@ bound to real actions.
 live date row · auto-shrinking `BUILD YOU` wordmark (18–40sp, measured with
 `TextMeasurer` so it never overflows).
 
-![icon](app/src/main/res/drawable/ic_launcher_foreground.xml)
+The launcher icon is `app/src/main/res/drawable/ic_launcher_foreground.xml`.
 
 ## Stack
 
@@ -62,11 +62,14 @@ creature mascot. Each is a `TODO(v2)` comment in the source at the relevant spot
 ```
 
 Debug builds sign with AGP's auto-generated debug keystore — no signing config needed.
+A prebuilt copy of the same artifact is committed at **`dist/app-debug.apk`** (the
+`app/build/` directory is gitignored, so use `dist/` when cloning).
 
 ## Sideload walkthrough
 
-1. **Transfer** `app/build/outputs/apk/debug/app-debug.apk` to the phone (USB copy,
-   cloud drive, or direct download).
+1. **Transfer the APK** — `dist/app-debug.apk` from a fresh clone, or
+   `app/build/outputs/apk/debug/app-debug.apk` right after building — to the phone
+   (USB copy, cloud drive, or direct download).
 2. **Allow installs from the source you used.** Open the APK from your file manager
    or browser; Android will prompt *"Install unknown apps"* — allow it **for that one
    app** (e.g. Files or Chrome). Settings path: *Settings → Apps → Special app access

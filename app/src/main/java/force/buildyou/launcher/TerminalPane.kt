@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -68,6 +70,8 @@ fun TerminalPane(
         modifier = modifier
             .fillMaxWidth()
             .background(TerminalBg)
+            // Edge-to-edge: keep the input row clear of the gesture/3-button nav bar.
+            .navigationBarsPadding()
             .imePadding(),
     ) {
         LazyColumn(
@@ -129,16 +133,16 @@ fun TerminalPane(
                             input = ""
                         },
                     ),
-                    modifier = Modifier.fillMaxWidth(),
+                    // Real focus tracking: the hint hides only while the field is
+                    // actually focused, so it never sits under the user's cursor.
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusChanged { focused = it.isFocused },
                 )
             }
         }
     }
 }
-
-/** No-op: focus handling stays with BasicTextField's default interaction. */
-private fun Modifier.focusableTerminalFocus(focused: Boolean): Modifier =
-    if (focused) this else this
 
 private fun Line.toAnnotated(): AnnotatedString = buildAnnotatedString {
     when (kind) {
