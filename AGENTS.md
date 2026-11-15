@@ -10,8 +10,11 @@
 
 ## Overview
 
-A new project scaffolded in Digby Code. **Stack: to be decided** — fill in the one-line "what/why", the Stack, and the Commands below once the shape is chosen.
-Stack: **to be decided**  <!-- language + framework with versions -->
+**--force ./BUILD YOU** — a real Android home-screen launcher (Kotlin + Jetpack Compose,
+Material 3, dark-only). Declares `CATEGORY_HOME`, so it appears in the system
+"Use as Home app" chooser; lists real installed apps, launches them, and runs a
+terminal pane bound to real actions.
+Stack: **Kotlin 2.0.21 · Compose BOM 2024.10.01 (Material 3) · AGP 8.13.2 · Gradle 8.14.3 · compileSdk/targetSdk 36 · minSdk 31 · Java 17**
 
 ## Environment
 
@@ -20,25 +23,35 @@ Stack: **to be decided**  <!-- language + framework with versions -->
 - You start on a **fresh branch off `main`** — no need to create one for normal work.
 - There is no `git_branch`/`git_fetch`/`git_pull` tool: make a second branch with `git checkout -b`
   via `run_command` if you must, and don't try to sync a diverged `main` mid-session.
+- Toolchain (installed under `$HOME/.local`, PATH via `$DIGBY_ENV`): JDK 17 (Temurin) at
+  `~/.local/jdk17`, Android SDK at `~/.local/android-sdk` (platform-36, build-tools 36.0.0),
+  Gradle 8.14.3 at `~/.local/gradle-dist`. `local.properties` points `sdk.dir` at the SDK.
 
 ## Commands
 
-No manifest yet — fill these in (and keep them current) as soon as the stack exists.
-
 ```
-Install:   <e.g. npm install / uv sync / cargo fetch>
-Dev/run:   <e.g. npm run dev>
-Typecheck: <e.g. npx tsc --noEmit>
-Lint:      <e.g. npm run lint>
-Test:      <e.g. npm test>
-Build:     <e.g. npm run build>
+Install:   (none — wrapper + cached deps; first build downloads ~500 MB from Google Maven)
+Dev/run:   ./gradlew --no-daemon assembleDebug   (no dev server; it's an Android app)
+Typecheck: ./gradlew --no-daemon compileDebugKotlin
+Lint:      ./gradlew --no-daemon lintDebug
+Test:      ./gradlew --no-daemon testDebugUnitTest   (no tests yet)
+Build:     ./gradlew --no-daemon assembleDebug  →  app/build/outputs/apk/debug/app-debug.apk
+Verify APK: $ANDROID_HOME/build-tools/36.0.0/aapt2 dump badging app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Never assume a library is installed — `grep` the manifest or a neighbouring import first.
+Use `--no-daemon`: daemons eat RAM and outlive the session in this container.
 
 ## Project Structure
 
-- _(add the 3–5 directories that matter, one line each — not a full tree)_
+- `app/src/main/java/force/buildyou/launcher/` — all Kotlin:
+  `MainActivity` (single-activity, edge-to-edge, owns intents/state), `AppInventory`
+  (PackageManager query + wallpaper), `AppDeck` (grid + long-press sheet),
+  `BrandHeader` (date row, stamp ladder, TextMeasurer auto-shrink wordmark),
+  `TerminalEngine`/`TerminalPane` (command line), `LauncherPrefs` (hidden + order).
+- `app/src/main/AndroidManifest.xml` — HOME/DEFAULT intent filter, `singleTask`,
+  `<queries>` for package visibility (NO `QUERY_ALL_PACKAGES`).
+- `gradle/libs.versions.toml` — every version pin lives here.
+- `.github/workflows/build.yml` — CI that builds and uploads the debug APK.
 
 Discovery/secret exclusions live in `.digbyignore`; the machine-readable command list is `.digby/config.json`.
 

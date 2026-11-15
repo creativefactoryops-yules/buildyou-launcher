@@ -1,17 +1,17 @@
 {
   "version": 1,
   "defaultBranch": "main",
-  "stack": null,
+  "stack": "android-kotlin-compose",
   "commands": {
-    "install": null,
+    "install": "./gradlew --no-daemon -q help",
     "dev": null,
-    "build": null,
-    "test": null,
+    "build": "./gradlew --no-daemon assembleDebug",
+    "test": "./gradlew --no-daemon testDebugUnitTest",
     "testOne": null,
-    "typecheck": null,
-    "lint": null
+    "typecheck": "./gradlew --no-daemon compileDebugKotlin",
+    "lint": "./gradlew --no-daemon lintDebug"
   },
-  "verify": [],
+  "verify": ["typecheck", "lint", "build"],
   "docsHash": "56954e584f6a3a071b098c04f52f589535d6c2fff6250035db7fcb48b6b6722a",
   "verified": false,
   "loop": {

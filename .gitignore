@@ -1,24 +1,20 @@
-# Secrets — real values live in .env; document names in .env.example
-.env
-.env.*
-!.env.example
-
-# Python
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-
-# Node
-node_modules/
-dist/
+# Gradle
+.gradle/
 build/
+local.properties
 
-# Logs / caches
+# Android Studio / IntelliJ
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Kotlin
 *.log
-.cache/
-wandb/
 
-# OS junk
+# OS
 .DS_Store
-Thumbs.db
+
+# Deliverable artifacts live in dist/ (committed deliberately):
+# dist/*.apk

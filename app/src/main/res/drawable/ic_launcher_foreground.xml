@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive icon foreground: the force/BUILD YOU stamp glyph on transparent. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Border frame (1dp-equivalent stroke at icon scale) -->
+    <path
+        android:strokeColor="#F2F2F0"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:pathData="M30,42 L78,42 L78,66 L30,66 Z" />
+    <!-- double dash of the force flag -->
+    <path
+        android:strokeColor="#6E6E68"
+        android:strokeWidth="2.6"
+        android:pathData="M36,50 L43,50 M45,50 L52,50" />
+    <!-- f of force -->
+    <path
+        android:strokeColor="#6E6E68"
+        android:strokeWidth="2.6"
+        android:pathData="M56,56 L56,47 M56,47 L60,47" />
+    <!-- dot slash B bar -->
+    <path
+        android:strokeColor="#F2F2F0"
+        android:strokeWidth="2.6"
+        android:pathData="M36,60 L38,60 M41,58 L41,62 M41,58 L46,58 L46,62 L41,62" />
+    <!-- U glyph -->
+    <path
+        android:strokeColor="#F2F2F0"
+        android:strokeWidth="2.6"
+        android:pathData="M62,58 L62,61 Q62,63 64,63 Q66,63 66,61 L66,58" />
+</vector>

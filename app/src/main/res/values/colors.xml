@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark-only launcher: pure black deck, ink-white wordmark. -->
+    <color name="deck_background">#050505</color>
+    <color name="ink_full">#F2F2F0</color>
+    <color name="ink_bright">#B9B9B4</color>
+    <color name="ink_dim">#6E6E68</color>
+    <color name="ink_faintest">#47473F</color>
+    <color name="stamp_border">#8A8A82</color>
+    <color name="terminal_green">#7CFF9B</color>
+    <color name="terminal_amber">#FFC24B</color>
+    <color name="terminal_red">#FF6B5E</color>
+    <color name="launcher_accent">#C8FF3D</color>
+</resources>
