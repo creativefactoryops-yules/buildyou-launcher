@@ -31,6 +31,15 @@
 - **Next steps (v2 backlog, all named as TODO(v2) in source):** drag-to-reorder,
   `wall <path>` image wallpaper, home-screen widgets (AppWidgetHost), notification
   badges, snake game, creature mascot.
-- **CI:** `.github/workflows/build.yml` builds + uploads `app-debug.apk` on push/PR.
-  No git remote is configured on this repo, so it has not run here.
-- **Repo state:** all work on branch `digby/session-3156d862`; no remote to push to.
+- **CI:** `.github/workflows/build.yml` builds + uploads `app-debug.apk` on push/PR
+  (and via `workflow_dispatch`, no secrets). 
+- **Published (2026-11-15):** source is public at
+  **https://github.com/creativefactoryops-yules/buildyou-launcher** — the session
+  branch's history pushed as `main` (clone URL
+  `https://github.com/creativefactoryops-yules/buildyou-launcher.git`). Hygiene
+  verified before pushing: `local.properties` untracked+gitignored, no keystores /
+  real `.env` (only the placeholder `.env.example`), `gradlew` committed mode
+  `100755`, wrapper jar+properties present, workflow secret-free. README carries a
+  clone/build section incl. Termux notes.
+- **Repo state:** all work on branch `digby/session-3156d862`, now also pushed to
+  the public repo as `main`; local `main` is a stale scaffold commit.

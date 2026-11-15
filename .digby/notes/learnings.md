@@ -23,3 +23,11 @@
   `./gradlew` then works standalone. Use `--no-daemon` always in this container.
 - `ACTION_UNINSTALL_PACKAGE` is deprecated (warning only) — kept deliberately for the
   long-press Uninstall action; `ACTION_DELETE` is the modern spelling if we ever care.
+- **Published source lives at github.com/creativefactoryops-yules/buildyou-launcher**
+  (public, session history pushed as `main`). The repo was created empty via
+  `gh repo create <owner>/<name> --public` with the connected account's stored
+  credential (no auto-init), then pushed with `git push origin HEAD:main` after
+  setting `remote.origin.url`. For any future publish from a fresh container:
+  `gh` is at `/usr/local/bin/gh`; `GITHUB_TOKEN`/`GH_TOKEN` are pre-set in the
+  shell but must never be echoed. `gh repo create` failed NOT for auth but only
+  when the name already existed — check with a 404 probe on the API first.

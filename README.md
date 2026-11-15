@@ -65,6 +65,38 @@ Debug builds sign with AGP's auto-generated debug keystore — no signing config
 A prebuilt copy of the same artifact is committed at **`dist/app-debug.apk`** (the
 `app/build/` directory is gitignored, so use `dist/` when cloning).
 
+## Clone & build from GitHub
+
+```bash
+git clone https://github.com/creativefactoryops-yules/buildyou-launcher.git
+cd buildyou-launcher
+./gradlew assembleDebug
+# → app/build/outputs/apk/debug/app-debug.apk   (debug-signed)
+```
+
+Everything needed to build is in the repo: the Gradle wrapper (`gradlew` + `gradle/wrapper/*`),
+the version pins (`gradle/libs.versions.toml`), and the CI workflow. You only need a JDK 17
+and an Android SDK (platform 36 + build-tools 36.0.0) — point `local.properties`'s
+`sdk.dir` at your SDK, or set `ANDROID_HOME`. `local.properties` is gitignored and
+machine-specific on purpose. CI (`.github/workflows/build.yml`) builds the APK on
+`ubuntu-latest` on every push and via *workflow_dispatch* — grab the `app-debug-apk`
+artifact from a run page if you don't want to build locally.
+
+### Building on the phone (Termux)
+
+```bash
+pkg install -y git openjdk-17
+git clone https://github.com/creativefactoryops-yules/buildyou-launcher.git
+cd buildyou-launcher
+./gradlew assembleDebug
+```
+
+Notes for on-device builds: Gradle needs ~2 GB of free memory, so close other apps.
+The Android SDK's `aapt2` build tool ships an x86_64 binary — on an ARM phone a native
+build may fail in resource linking; if so, use **proot-distro** (a Debian/Ubuntu chroot
+with an `aarch64` toolchain) inside Termux, or just download the APK from the CI
+artifacts / `dist/app-debug.apk` and sideload it (below).
+
 ## Sideload walkthrough
 
 1. **Transfer the APK** — `dist/app-debug.apk` from a fresh clone, or
