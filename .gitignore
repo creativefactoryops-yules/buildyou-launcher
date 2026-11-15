@@ -1,0 +1,24 @@
+# Secrets — real values live in .env; document names in .env.example
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+build/
+
+# Logs / caches
+*.log
+.cache/
+wandb/
+
+# OS junk
+.DS_Store
+Thumbs.db

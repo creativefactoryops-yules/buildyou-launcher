@@ -1,0 +1,30 @@
+# Digby Code — discovery/index + secret-read exclusions.
+# Keeps glob/grep fast and blocks reading real secret files (defense-in-depth on
+# top of Digby's built-in secret deny). Template files are explicitly allowed so
+# the agent can read required-variable lists.
+
+node_modules/
+dist/
+build/
+.next/
+out/
+target/
+coverage/
+__pycache__/
+.venv/
+venv/
+*.lock
+*-lock.json
+*.lockb
+
+# Ephemeral per-session scratch (plan/todo lifeboat) — never index or commit
+.digby/session/
+
+# Real secrets — never read
+.env
+.env.local
+.env.*.local
+
+# ...but allow templates
+!.env.example
+!.env.sample

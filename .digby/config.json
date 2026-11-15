@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "defaultBranch": "main",
+  "stack": null,
+  "commands": {
+    "install": null,
+    "dev": null,
+    "build": null,
+    "test": null,
+    "testOne": null,
+    "typecheck": null,
+    "lint": null
+  },
+  "verify": [],
+  "docsHash": "56954e584f6a3a071b098c04f52f589535d6c2fff6250035db7fcb48b6b6722a",
+  "verified": false,
+  "loop": {
+    "maxAutoVerifyIterations": 3,
+    "resumeStepBudget": 8,
+    "perCommandTimeoutMs": 600000,
+    "sameFailureStop": 2,
+    "oscillationWindow": 4,
+    "gatePullRequest": true
+  },
+  "ignore": ".digbyignore"
+}
