@@ -14,6 +14,17 @@ local.properties
 *.keystore
 *.p12
 *.pem
+*.key
+id_rsa*
+id_ed25519*
+.ssh/
+secrets.properties
+google-services.json
+local.properties.bak
+
+# Ephemeral per-session scratch — never commit
+.digby/session/
+.digby/secrets/
 
 # Android Studio / IntelliJ
 .idea/

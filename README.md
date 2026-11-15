@@ -16,7 +16,7 @@ The launcher icon is `app/src/main/res/drawable/ic_launcher_foreground.xml`.
 | Piece | Version |
 | --- | --- |
 | Kotlin | 2.0.21 |
-| Jetpack Compose BOM | 2024.10.01 (Material 3 1.3.0) |
+| Jetpack Compose BOM | 2024.10.01 (Material 3 1.3.1) |
 | Android Gradle Plugin | 8.13.2 |
 | Gradle | 8.14.3 |
 | compileSdk / targetSdk | 36 |
