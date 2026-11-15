@@ -1,6 +1,7 @@
 package force.buildyou.launcher
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,12 +12,12 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -57,13 +59,14 @@ fun TerminalPane(
     engine: TerminalEngine,
     modifier: Modifier = Modifier,
 ) {
-    val listState = rememberLazyListState()
+    val listState = rememberScrollState()
     var input by remember { mutableStateOf("") }
     var focused by remember { mutableStateOf(false) }
+    val ctx = LocalContext.current
 
     // Keep the newest line visible.
     LaunchedEffect(engine.output.size) {
-        if (engine.output.isNotEmpty()) listState.animateScrollToItem(engine.output.size - 1)
+        if (engine.output.isNotEmpty()) listState.animateScrollTo(listState.maxValue)
     }
 
     Column(
@@ -74,21 +77,57 @@ fun TerminalPane(
             .navigationBarsPadding()
             .imePadding(),
     ) {
-        LazyColumn(
-            state = listState,
+        // TERM row: label + COPY ALL — the owner could not copy help output in v1
+        // (Compose Text is not selectable by default), so the whole buffer is one
+        // tap onto the clipboard AND long-press selection works line by line.
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp, end = 12.dp, top = 6.dp),
+        ) {
+            Text(
+                text = "TERM",
+                color = InOutDim,
+                fontSize = 10.sp,
+                fontFamily = FontFamily.Monospace,
+            )
+            Box(Modifier.weight(1f))
+            Text(
+                text = "COPY ALL",
+                color = PromptInk,
+                fontSize = 10.sp,
+                fontFamily = FontFamily.Monospace,
+                modifier = Modifier
+                    .clickable {
+                        val all = engine.output.joinToString("\n") { it.text }
+                        val cm = ctx.getSystemService(android.content.Context.CLIPBOARD_SERVICE)
+                            as android.content.ClipboardManager
+                        cm.setPrimaryClip(android.content.ClipData.newPlainText("BUILD YOU", all))
+                    }
+                    .padding(horizontal = 6.dp, vertical = 4.dp),
+            )
+        }
+        SelectionContainer(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = false)
-                .height(180.dp)
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .height(180.dp),
         ) {
-            items(engine.output) { line ->
-                Text(
-                    text = line.toAnnotated(),
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                    fontFamily = FontFamily.Monospace,
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(listState)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            ) {
+                engine.output.forEach { line ->
+                    Text(
+                        text = line.toAnnotated(),
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        fontFamily = FontFamily.Monospace,
+                    )
+                }
             }
         }
         Row(
@@ -112,7 +151,7 @@ fun TerminalPane(
             ) {
                 if (input.isEmpty() && !focused) {
                     Text(
-                        text = "help · apps · open · wall · brand · icon · --force",
+                        text = "help · apps · open · reload · find apps in the search bar",
                         color = InOutDim,
                         fontSize = 12.sp,
                         fontFamily = FontFamily.Monospace,

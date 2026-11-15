@@ -11,6 +11,31 @@ live date row · auto-shrinking `BUILD YOU` wordmark (18–40sp, measured with
 
 The launcher icon is `app/src/main/res/drawable/ic_launcher_foreground.xml`.
 
+## v2 (what changed)
+
+- **Type-to-find.** A search field sits directly above the deck — type any part of
+  an app's label or package name and the grid filters live. Launching from a
+  filtered deck clears the filter.
+- **No more sheared rows.** The deck owns only its own scroll region; every
+  installed app is reachable by scrolling (v1 let the bottom row run under the
+  terminal).
+- **Month fix.** The header date row rendered "NOV" as "M11" — that was
+  `DateTimeFormatter` with `Locale.ROOT`, which carries no localized month names
+  on Android. Now formatted with `Locale.ENGLISH`: `SUN 15 NOV`.
+- **Copyable terminal.** Terminal output is long-press selectable, and a
+  **COPY ALL** control in the TERM row puts the whole buffer (help text included)
+  on the clipboard in one tap.
+- **`--force` → `reload`.** The reload command no longer collides with the brand
+  stamp; `--force` still works as a silent alias.
+- **App label is now `BUILD YOU`** (the on-deck brand lockup is unchanged);
+  `versionCode 2` / `versionName 2.0.0`.
+
+> **Upgrading from v1:** v2 is signed with a different debug key than the v1 build
+> (debug keystores are machine-local), so Android will refuse an in-place update.
+> Uninstall v1 once (*Settings → Apps → BUILD YOU → Uninstall*), then install v2.
+> Your hidden-apps list is lost with the uninstall (v1 kept it in app-private
+> storage) — re-hide via long-press.
+
 ## Stack
 
 | Piece | Version |
@@ -41,10 +66,15 @@ Single activity (`MainActivity`), edge-to-edge, Compose-only UI (no appcompat).
 - **Long-press sheet.** App info (`ACTION_APPLICATION_DETAILS_SETTINGS`),
   Uninstall (`ACTION_UNINSTALL_PACKAGE`), Hide (persisted set in
   `SharedPreferences`; unhide via the terminal's `unhide <pkg>`).
+- **Type-to-find deck.** A search field above the grid filters the inventory live
+  on label or package name; a blank query shows everything, and the deck scrolls
+  (3–4 columns by usable width) so no row is ever cut off.
 - **Terminal pane.** `help`, `apps`, `open <name>`, `wall <color>` (solid colours via
   `WallpaperManager`; image paths honestly report *not implemented in v1*), `brand`,
-  `icon`, `--force` (reload inventory), plus `hidden` / `unhide` / `date` / `clear`.
-  Unsupported things print an honest "not implemented", never a fake success.
+  `icon`, `reload` (reload inventory; v1 spelled it `--force`, which still works),
+  plus `hidden` / `unhide` / `date` / `clear`. Output is long-press selectable and
+  **COPY ALL** puts the whole buffer on the clipboard. Unsupported things print an
+  honest "not implemented", never a fake success.
 - **Icon ladder.** The stamp text degrades by available width — `[ --force ./BUILD YOU ]`
   → `[ -f ]` → `[ · ]` → nothing — and the chosen rung is written to logcat
   (`stamp ladder → …`).
@@ -111,9 +141,11 @@ artifacts / `dist/app-debug.apk` and sideload it (below).
    `CATEGORY_HOME`, Android may warn that it is a home app — expected.
 4. **Make it the Home app.** Either take the chooser that pops up the next time you
    press **Home**, or set it manually: *Settings → Apps → Default apps → Home app →
-   --force ./BUILD YOU*.
-5. Press Home. The deck appears with the live date, the wordmark, and your apps.
-   Long-press an icon for App info / Uninstall / Hide; type `help` in the terminal.
+   BUILD YOU*.
+5. Press Home. The deck appears with the live date, the wordmark, and your apps —
+   type in the **find an app…** field to narrow the grid. Long-press an icon for
+   App info / Uninstall / Hide; tap the terminal and type `help` (then **COPY ALL**
+   to grab the command list).
 
 > Note on the app icon on the deck: the launcher deliberately **excludes its own
 > package** from the inventory, so you will not find itself among the apps.

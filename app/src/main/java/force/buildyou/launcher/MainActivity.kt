@@ -176,6 +176,13 @@ private fun LauncherRoot(
 ) {
     var usableWidth by remember { mutableStateOf(360f) }
     val density = LocalDensity.current
+    var query by remember { mutableStateOf("") }
+    // Type-to-find: the deck shows only what matches the live query (label or
+    // package, case-insensitive); a blank query shows the full inventory.
+    val shown = if (query.isBlank()) apps else apps.filter {
+        it.label.contains(query, ignoreCase = true) ||
+            it.packageName.contains(query, ignoreCase = true)
+    }
 
     LaunchedEffect(Unit) { engine.printBanner() }
 
@@ -200,9 +207,15 @@ private fun LauncherRoot(
                     ),
             )
             AppDeck(
-                apps = apps,
+                apps = shown,
                 usableWidthDp = usableWidth,
-                onLaunch = { onLaunch(it.packageName) },
+                query = query,
+                onQueryChange = { query = it },
+                // Launching clears the filter so Home returns to the full deck.
+                onLaunch = {
+                    onLaunch(it.packageName)
+                    query = ""
+                },
                 onAppInfo = { onAppInfo(it.packageName) },
                 onUninstall = { onUninstall(it.packageName) },
                 onHide = { onHide(it.packageName) },

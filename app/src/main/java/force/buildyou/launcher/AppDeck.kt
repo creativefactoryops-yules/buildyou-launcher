@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -70,6 +72,8 @@ private fun columnsFor(usableWidthDp: Float): Int = if (usableWidthDp >= 388f) 4
 fun AppDeck(
     apps: List<AppEntry>,
     usableWidthDp: Float,
+    query: String,
+    onQueryChange: (String) -> Unit,
     onLaunch: (AppEntry) -> Unit,
     onAppInfo: (AppEntry) -> Unit,
     onUninstall: (AppEntry) -> Unit,
@@ -78,20 +82,36 @@ fun AppDeck(
 ) {
     var sheetApp by remember { mutableStateOf<AppEntry?>(null) }
 
-    Box(modifier = modifier.fillMaxSize().background(DeckBackground)) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(columnsFor(usableWidthDp)),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 120.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            items(apps, key = { it.packageName }) { app ->
-                AppIcon(
-                    app = app,
-                    onClick = { onLaunch(app) },
-                    onLongClick = { sheetApp = app },
+    Column(modifier = modifier.fillMaxSize().background(DeckBackground)) {
+        DeckSearchBar(query = query, onQueryChange = onQueryChange)
+        // The deck owns ONLY its own scroll region (weight 1) — v1 filled the
+        // whole box and let rows run under the terminal, shearing the last row.
+        Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+            if (apps.isEmpty()) {
+                Text(
+                    text = if (query.isBlank()) "no launcher apps found"
+                           else "no apps match \"$query\"",
+                    color = InkDim,
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.align(Alignment.Center).padding(16.dp),
                 )
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columnsFor(usableWidthDp)),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    items(apps, key = { it.packageName }) { app ->
+                        AppIcon(
+                            app = app,
+                            onClick = { onLaunch(app) },
+                            onLongClick = { sheetApp = app },
+                        )
+                    }
+                }
             }
         }
 
@@ -104,6 +124,57 @@ fun AppDeck(
                 onHide = { onHide(app); sheetApp = null },
             )
         }
+    }
+}
+
+/**
+ * Type-to-find bar above the deck: filters the visible inventory live on label
+ * or package name (handled by the caller). Styled to read as part of the
+ * terminal aesthetic — prompt chevron, monospace, deck-black field.
+ */
+@Composable
+private fun DeckSearchBar(query: String, onQueryChange: (String) -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 6.dp),
+    ) {
+        Text(
+            text = ">",
+            color = AccentGreen,
+            fontSize = 13.sp,
+            fontFamily = FontFamily.Monospace,
+        )
+        Spacer(Modifier.width(8.dp))
+        BasicTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            singleLine = true,
+            textStyle = TextStyle(
+                color = InkFull,
+                fontSize = 13.sp,
+                fontFamily = FontFamily.Monospace,
+            ),
+            modifier = Modifier
+                .weight(1f)
+                .height(32.dp)
+                .background(Color(0xFF141412), RoundedCornerShape(6.dp))
+                .padding(horizontal = 8.dp),
+            decorationBox = { inner ->
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+                    if (query.isEmpty()) {
+                        Text(
+                            text = "find an app…",
+                            color = InkDim,
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily.Monospace,
+                        )
+                    }
+                    inner()
+                }
+            },
+        )
     }
 }
 

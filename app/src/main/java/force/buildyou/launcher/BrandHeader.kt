@@ -54,10 +54,12 @@ fun BrandHeader(maxWidth: Dp, modifier: Modifier = Modifier) {
     val textMeasurer = rememberTextMeasurer()
 
     // Live date: day-of-week, day-of-month, month — e.g. "SUN 15 NOV".
+    // Locale.ENGLISH, not ROOT: the ROOT locale carries no localized month/day
+    // names on Android, so "MMM" rendered as "M11" (month NUMBER) instead of "NOV".
     val dateText = remember {
         LocalDate.now()
-            .format(DateTimeFormatter.ofPattern("EEE dd MMM", Locale.ROOT))
-            .uppercase(Locale.ROOT)
+            .format(DateTimeFormatter.ofPattern("EEE dd MMM", Locale.ENGLISH))
+            .uppercase(Locale.ENGLISH)
     }
 
     // --- Wordmark: largest sp in [18, 40] whose measured width fits the available width. ---

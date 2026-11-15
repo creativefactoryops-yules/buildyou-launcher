@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">--force ./BUILD YOU</string>
+    <string name="app_name">BUILD YOU</string>
     <!-- Wordmark shown large on the home deck. -->
     <string name="wordmark">BUILD YOU</string>
     <!-- Stamp parts: the force flag renders in the dimmest ink, the path one step brighter. -->

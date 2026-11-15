@@ -42,7 +42,7 @@ class TerminalEngine(
     }
 
     fun printBanner() {
-        emit("--force ./BUILD YOU — launcher terminal v1.0.0", Line.Kind.OK)
+        emit("--force ./BUILD YOU — launcher terminal v2.0.0", Line.Kind.OK)
         emit("type `help` for commands", Line.Kind.WARN)
     }
 
@@ -62,6 +62,10 @@ class TerminalEngine(
             "wall" -> wall(arg)
             "brand" -> brand()
             "icon" -> icon()
+            "reload" -> force()
+            // v1 accepted "--force" as the reload command; it collided with the
+            // brand stamp, so v2 renamed it. Kept as a silent alias so nothing
+            // the owner already typed breaks.
             "--force" -> force()
             "hidden" -> hidden()
             "unhide" -> unhide(arg)
@@ -98,7 +102,7 @@ class TerminalEngine(
         emit("  wall <color>      set solid-color wallpaper (#rrggbb or name)")
         emit("  brand             print the brand spec")
         emit("  icon              print the icon-ladder spec")
-        emit("  --force           reload app inventory")
+        emit("  reload            reload app inventory (v1 spelled it --force)")
         emit("  hidden            list hidden packages")
         emit("  unhide <pkg>      unhide a package")
         emit("  date              print today's date")
@@ -112,7 +116,7 @@ class TerminalEngine(
     private fun apps() {
         val apps = visibleApps()
         if (apps.isEmpty()) {
-            emit("no launcher apps visible — run --force to rescan", Line.Kind.WARN)
+            emit("no launcher apps visible — run `reload` to rescan", Line.Kind.WARN)
             return
         }
         apps.forEachIndexed { i, app ->
@@ -205,7 +209,7 @@ class TerminalEngine(
     private fun force() {
         emit("reloading inventory …")
         reloadInventory()
-        emit("--force: inventory reloaded", Line.Kind.OK)
+        emit("reload: inventory reloaded", Line.Kind.OK)
     }
 
     private fun hidden() {
@@ -232,7 +236,8 @@ class TerminalEngine(
     }
 
     private fun date() {
-        emit(LocalDate.now().format(DateTimeFormatter.ofPattern("EEE d MMM uuuu", java.util.Locale.ROOT)))
+        // Locale.ENGLISH, not ROOT — ROOT renders "MMM" as "M11" on Android.
+        emit(LocalDate.now().format(DateTimeFormatter.ofPattern("EEE d MMM uuuu", java.util.Locale.ENGLISH)))
     }
 
     private fun clear() {
