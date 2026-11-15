@@ -51,7 +51,11 @@ Use `--no-daemon`: daemons eat RAM and outlive the session in this container.
 - `app/src/main/AndroidManifest.xml` — HOME/DEFAULT intent filter, `singleTask`,
   `<queries>` for package visibility (NO `QUERY_ALL_PACKAGES`).
 - `gradle/libs.versions.toml` — every version pin lives here.
-- `.github/workflows/build.yml` — CI that builds and uploads the debug APK.
+- `.github/workflows/build.yml` — once activated (see README's **CI** section) this
+  is the CI that builds and uploads the debug APK. It is **not currently on
+  `main`**: the automation that first published this repo lacks the GitHub
+  `workflow` scope, so the validated, secret-free workflow is parked, byte-identical,
+  at `docs/ci-workflow.yml`.
 
 Discovery/secret exclusions live in `.digbyignore`; the machine-readable command list is `.digby/config.json`.
 

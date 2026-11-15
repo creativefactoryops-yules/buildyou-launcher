@@ -31,8 +31,11 @@
 - **Next steps (v2 backlog, all named as TODO(v2) in source):** drag-to-reorder,
   `wall <path>` image wallpaper, home-screen widgets (AppWidgetHost), notification
   badges, snake game, creature mascot.
-- **CI:** `.github/workflows/build.yml` builds + uploads `app-debug.apk` on push/PR
-  (and via `workflow_dispatch`, no secrets). 
+- **CI (NOT yet live on origin/main):** no `.github/workflows/` file exists on
+  origin — the publishing token has no `workflow` scope (see below). The validated,
+  secret-free workflow ships in-repo as `docs/ci-workflow.yml` (push/PR +
+  `workflow_dispatch`, builds + uploads `app-debug.apk`); activating it is the
+  flagged owner action.
 - **Published (2026-11-15):** source is public at
   **https://github.com/creativefactoryops-yules/buildyou-launcher** (clone URL
   `https://github.com/creativefactoryops-yules/buildyou-launcher.git`). The account's
@@ -52,8 +55,10 @@
   question `oq_cadb8511-262a-4425-a4cb-6ebab5ca3bc4` (web-UI paste vs PAT vs leave
   off) delivered 2026-11-15. Once the file exists, `workflow_dispatch` can be
   triggered and CI runs on every push.
-- **Pushed tip:** origin/main = `026824c445f56d563eaafc8e3124c34ed81ac5f0`
-  ("docs(ci): park validated workflow at docs/ci-workflow.yml with activation note");
+- **Pushed tip (as of the last state sync, 2026-11-15T07:2xZ):** origin/main =
+  `99a890c242203877514eecd92937753c2b9f900a` — the state sync that recorded
+  the publish verification. This line drifts by one commit each state sync;
+  trust `git ls-remote origin` over it.
   filtered chain commits: `bce95d1` (feat v1), `44ab181` (review fixes), `c189012`
   (publish prep), `5758a6b` (audit fixes), `026824c` (parked CI) off base `d1f2a3c`.
   Session branch tip (true history incl. workflow file): `5a8eb1c`.

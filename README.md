@@ -74,13 +74,14 @@ cd buildyou-launcher
 # → app/build/outputs/apk/debug/app-debug.apk   (debug-signed)
 ```
 
-Everything needed to build is in the repo: the Gradle wrapper (`gradlew` + `gradle/wrapper/*`),
-the version pins (`gradle/libs.versions.toml`), and the CI workflow. You only need a JDK 17
+Everything needed to build is in the repo: the Gradle wrapper (`gradlew` + `gradle/wrapper/*`)
+and the version pins (`gradle/libs.versions.toml`). You only need a JDK 17
 and an Android SDK (platform 36 + build-tools 36.0.0) — point `local.properties`'s
 `sdk.dir` at your SDK, or set `ANDROID_HOME`. `local.properties` is gitignored and
-machine-specific on purpose. CI builds the APK on `ubuntu-latest` on every push and
-via *workflow_dispatch* — grab the `app-debug-apk` artifact from a run page if you
-don't want to build locally (see **CI** below for the one-time activation step).
+machine-specific on purpose. The CI workflow definition ships as
+`docs/ci-workflow.yml`; after the one-time activation step (see **CI** below) it
+builds the APK on `ubuntu-latest` on every push and via *workflow_dispatch* — grab
+the `app-debug-apk` artifact from a run page if you don't want to build locally.
 
 ### Building on the phone (Termux)
 
