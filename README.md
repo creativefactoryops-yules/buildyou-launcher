@@ -78,9 +78,9 @@ Everything needed to build is in the repo: the Gradle wrapper (`gradlew` + `grad
 the version pins (`gradle/libs.versions.toml`), and the CI workflow. You only need a JDK 17
 and an Android SDK (platform 36 + build-tools 36.0.0) — point `local.properties`'s
 `sdk.dir` at your SDK, or set `ANDROID_HOME`. `local.properties` is gitignored and
-machine-specific on purpose. CI (`.github/workflows/build.yml`) builds the APK on
-`ubuntu-latest` on every push and via *workflow_dispatch* — grab the `app-debug-apk`
-artifact from a run page if you don't want to build locally.
+machine-specific on purpose. CI builds the APK on `ubuntu-latest` on every push and
+via *workflow_dispatch* — grab the `app-debug-apk` artifact from a run page if you
+don't want to build locally (see **CI** below for the one-time activation step).
 
 ### Building on the phone (Termux)
 
@@ -122,7 +122,16 @@ artifacts / `dist/app-debug.apk` and sideload it (below).
 `.github/workflows/build.yml` builds the debug APK on every push/PR with
 `actions/checkout@v4` + `actions/setup-java@v4` (temurin 17) + the Android SDK
 preinstalled on GitHub's `ubuntu-latest` runners, and uploads `app-debug.apk` via
-`actions/upload-artifact@v4`.
+`actions/upload-artifact@v4`. It uses **no repository secrets**.
+
+> **One-time activation.** This repo was first published by an automation whose
+> GitHub credential is not allowed to create `.github/workflows/*` files (GitHub
+> requires a `workflow`-scoped token for that). The validated workflow is therefore
+> also parked, byte-identical, at **`docs/ci-workflow.yml`**. To turn CI on, create
+> `.github/workflows/build.yml` in the GitHub web UI (which is not scope-gated):
+> *Add file → Create new file*, name it `.github/workflows/build.yml`, paste the
+> content of `docs/ci-workflow.yml`, commit. CI then builds the APK on every push
+> and on demand (*Actions → build-apk → Run workflow*).
 
 ## Verification honesty
 
