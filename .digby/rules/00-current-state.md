@@ -55,6 +55,23 @@
   question `oq_cadb8511-262a-4425-a4cb-6ebab5ca3bc4` (web-UI paste vs PAT vs leave
   off) delivered 2026-11-15. Once the file exists, `workflow_dispatch` can be
   triggered and CI runs on every push.
+- **Owner is MID-PASTE (2026-11-15T08:28Z):** they sent a screenshot of the GitHub
+  web editor open at `.github/workflows/build.yml` on `main` (repo
+  buildyou-launcher), editor still EMPTY, "Commit changes..." greyed out — they
+  chose the web-UI route manually rather than the prefilled link. **CI-watch
+  armed:** schedule `68574b0d-75f3-4c27-99aa-3836b1702241` (recurring 30 min,
+  deltaGate probe = Actions `total_count` of the public repo, heartbeat 24 h) fires
+  when their commit lands, verifies the run, reports the URL, updates this file,
+  syncs via the SAFE PUSH RECIPE, dismisses oq_cadb8511 and retires itself.
+- **SAFE PUSH RECIPE (mandatory for every push to origin/main; full text in
+  `.digby/notes/learnings.md`):** branch fresh off origin/main, overlay only the
+  changed paths, NEVER stage anything under `.github/`, assert
+  `git diff origin/main HEAD -- .github/` is empty before pushing. The owner's
+  pasted workflow file must never be deleted or modified by an automation push.
+- **Runner-valid (2026-11-15, actions/runner-images Ubuntu2404-Readme.md):**
+  `ubuntu-latest` x64 ships the Android SDK at `/usr/local/lib/android/sdk`
+  (`ANDROID_HOME` set), build-tools 36.0.0 and platform android-36 — the parked
+  workflow needs no SDK-setup step and no secrets.
 - **Pushed tip (as of the last state sync, 2026-11-15T07:2xZ):** origin/main =
   `99a890c242203877514eecd92937753c2b9f900a` — the state sync that recorded
   the publish verification. This line drifts by one commit each state sync;

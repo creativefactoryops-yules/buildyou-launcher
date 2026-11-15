@@ -37,3 +37,24 @@
   pushed history (`git ls-tree <c> | grep -v $'\t\.github$' | git mktree` +
   `git commit-tree`) and adding the workflow file as a later commit once scoped
   credentials exist.
+- **SAFE PUSH RECIPE to origin/main once the owner's `.github/workflows/build.yml`
+  exists (mandatory for every future push from this session):** the owner's web-UI
+  commit is the ONLY thing that can ever put that file on main, so an automation
+  push must never be able to delete or modify it. (1) `git fetch origin`;
+  (2) `git checkout -B sync/<ts> origin/main` — ALWAYS branch fresh off origin/main,
+  never off the session branch; (3) overlay ONLY the files you actually changed
+  (`git checkout digby/session-3156d862 -- <paths>` or edit in place), NEVER stage
+  anything under `.github/`; (4) assert `git diff origin/main HEAD -- .github/` is
+  EMPTY before pushing — if not, rebuild the change without the `.github/` delta;
+  (5) `git push origin HEAD:main`; (6) verify `git ls-remote origin` shows the new
+  tip and the repo answers HTTP 200. Never force-push. The session branch
+  `digby/session-3156d862` holds the full history including the workflow file —
+  never push it over main.
+- **The launcher repo's `.github/` directory is INVISIBLE to this credential** —
+  `git ls-remote`/`fetch`/`clone` and the Actions/workflow APIs all work, but any
+  ref write whose tree introduces or touches `.github/workflows/*` is refused (no
+  `workflow` scope). Consequence: the owner's pasted CI file, once committed via the
+  web UI, is also beyond our reach to modify or delete — the SAFE PUSH RECIPE exists
+  to make sure our state-sync pushes never try to remove it (a naive
+  `git push session-branch:main` would orphan it and be refused anyway, but a
+  filtered-tree push built from a stale base could silently drop it).
