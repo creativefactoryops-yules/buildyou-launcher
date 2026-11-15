@@ -48,9 +48,24 @@
   supplies a credential with `workflow` scope (paste a PAT → store_secret) or adds
   the file via the GitHub web UI (a browser session is not scope-gated). The
   validated workflow is also parked, byte-identical, at `docs/ci-workflow.yml` and
-  the README's **CI** section documents the one-step web-UI activation. Once the
-  file exists, `workflow_dispatch` can be triggered and CI runs on every push.
-  Owner question flagged with both routes.
+  the README's **CI** section documents the one-step web-UI activation. Owner
+  question `oq_cadb8511-262a-4425-a4cb-6ebab5ca3bc4` (web-UI paste vs PAT vs leave
+  off) delivered 2026-11-15. Once the file exists, `workflow_dispatch` can be
+  triggered and CI runs on every push.
+- **Pushed tip:** origin/main = `026824c445f56d563eaafc8e3124c34ed81ac5f0`
+  ("docs(ci): park validated workflow at docs/ci-workflow.yml with activation note");
+  filtered chain commits: `bce95d1` (feat v1), `44ab181` (review fixes), `c189012`
+  (publish prep), `5758a6b` (audit fixes), `026824c` (parked CI) off base `d1f2a3c`.
+  Session branch tip (true history incl. workflow file): `5a8eb1c`.
+  Recon artifacts cleaned: probe-write branch deleted, deploy key 169935954
+  deleted (HTTP 204), local keypair removed.
+- **Clone-and-build verified (2026-11-15):** an ANONYMOUS clone of the public repo
+  (credential helper disabled, depth 1, no local.properties — exactly a stranger's
+  environment) builds green: `./gradlew --no-daemon assembleDebug` →
+  `BUILD SUCCESSFUL in 2m 40s`, 37 tasks; fresh APK 24,210,981 bytes, sha256
+  `6901728d…34587` (size-identical to dist/, hash differs only by the debug
+  signing timestamp). `gh workflow run` honestly reports "could not find any
+  workflows" — CI activation is the flagged owner action.
 - **Repo state:** session work on branch `digby/session-3156d862` (full history,
   includes the workflow file); origin/main = filtered publish chain. Local `main`
   is a stale scaffold commit. After a scope fix, either add the workflow file as a
